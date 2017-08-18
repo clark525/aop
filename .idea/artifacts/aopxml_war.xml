@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="aopxml:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="aopxml.war">
+      <element id="artifact" artifact-name="aopxml:war exploded" />
+    </root>
+  </artifact>
+</component>

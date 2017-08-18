@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--<context:component-scan base-package="com.hang.aopxml"/>-->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+    <bean id="serviceTarget" class="com.hang.aopxml.ServiceBeanImpl"/>
+    <bean id="logAdvisor" class="com.hang.aopxml.LogAdvisor"/>
+    <bean id="allLogAdvice" class="com.hang.aopxml.AllLogAdvice"></bean>
+
+
+    <!-- 通过配置bean 实现了动态代理  proxyInterfaces:代理接口     target:实体类     intercepterNames:所动态生成的代理类拦截器-->
+    <bean id="service" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>com.hang.aopxml.ServiceBean</value>
+        </property>
+        <property name="target">
+            <ref local="serviceTarget"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>logAdvisor</value>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="look" class="com.hang.aopxml.Look" init-method="createLook" destroy-method="destoryLook">
+        <property name="logAfter" ref="logAfter"></property>
+        <property name="innerBean">
+            <bean class="com.hang.aopxml.InnerBean"/>
+        </property>
+
+        <property name="set">
+            <set>
+                <value>a</value>
+                <value>b</value>
+                <value>c</value>
+                <value>d</value>
+                <value>e</value>
+            </set>
+        </property>
+
+        <!--
+                <property name="users">
+                    <list>
+        
+                        <bean class="com.hang.aopxml.User">
+                            <property name="name" value="mkyongList" />
+                            <property name="age" value="28" />
+                        </bean>
+                    </list>
+                </property>
+        -->
+
+        <property name="users">
+            <list>
+                <ref bean="user1"/>
+            </list>
+        </property>
+
+        <property name="map">
+            <map>
+                <entry key="ok">
+                    <value>not ok</value>
+                </entry>
+            </map>
+        </property>
+
+    </bean>
+
+    <bean id="user" class="com.hang.aopxml.User">
+    </bean>
+
+    <bean id="user1" class="com.hang.aopxml.User">
+        <property name="name" value="clark"></property>
+        <property name="age" value="27"></property>
+    </bean>
+
+    <bean id="logAfter" class="com.hang.aopxml.LogAfter" init-method="before"></bean>
+
+
+    <bean id="cook" class="com.hang.aopxml.CookImpl"></bean>
+    <bean id="aboutCook" class="com.hang.aopxml.AboutCook">
+
+    </bean>
+    <aop:config>
+        <aop:aspect id="about" ref="aboutCook">
+            <aop:pointcut id="addAll" expression="execution(* com.hang.aopxml.Cook.*(..))"/>
+            <aop:before method="doBefore" pointcut-ref="addAll"/>
+            <aop:after-returning method="doAfterReturn" pointcut-ref="addAll" returning="result"/>
+            <aop:after-throwing method="doExcep" pointcut-ref="addAll"/>
+            <aop:after method="doAfter" pointcut-ref="addAll"/>
+            <aop:around method="doAround" pointcut-ref="addAll"/>
+        </aop:aspect>
+
+    </aop:config>
+
+    <bean id="aspectJAdvice" class="com.hang.aopxml.AspectJAdvice"></bean>
+
+</beans>
