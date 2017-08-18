@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * Created by clark on 17/8/15.
  */
+
 public class TestAop {
     public static void main(String[] args) {
         ApplicationContext factory = new ClassPathXmlApplicationContext("applicationContext.xml");
